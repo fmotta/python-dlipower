@@ -128,7 +128,7 @@ def main(argv):
 	            switch.on(s)
 	        if (resultArray[i] == 'OFF'):
 	            print("  turning " + s + ": back OFF") 
-	            switch.on(s)
+	            switch.off(s)
                 i = i + 1
 	
 
