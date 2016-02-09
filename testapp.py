@@ -14,10 +14,17 @@ import getopt
 import time
 #from array import array
 
+shortOpts = "hs:n:c:p:u:l"
+longOpts = ["hostname=","number=","command=","password=","user=","nolink"]
+
+def usage():
+    print("commands: ")
+    for o in longOpts:
+	print("    --" + o)
 
 #server = 'webswitch'
 def main(argv):
-    server = "192.168.8.222"
+    server = "192.168.0.100"
     command = "NONE"
     passWd = "1234"
     switchNum = "0"
@@ -28,14 +35,16 @@ def main(argv):
     resultArray = list()
 
     try:
-	opts, args = getopt.getopt(argv,"hs:n:c:p:u:l",["hostname=","number=","command=","password=","user=","nolink"])
+	opts, args = getopt.getopt(argv, shortOpts, longOpts)
+	#opts, args = getopt.getopt(argv,"hs:n:c:p:u:l",["hostname=","number=","command=","password=","user=","nolink"])
 
     except getopt.GetoptError:
       print('test.py -i <inputfile> -o <outputfile>')
       sys.exit(2)
     for opt, arg in opts:
        if opt == '-h':
-          print('test.py -i <inputfile> -o <outputfile>')
+          #print('test.py -i <inputfile> -o <outputfile>')
+	  usage()
           sys.exit()
 
        elif opt in ("-s", "--server"):
