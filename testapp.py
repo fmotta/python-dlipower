@@ -4,6 +4,8 @@ import dlipower
 import sys
 import getopt
 import time
+#from array import array
+
 
 #server = 'webswitch'
 def main(argv):
@@ -11,6 +13,7 @@ def main(argv):
     command = "NONE"
     passWd = "1234"
     switchNum = "0"
+    switchArray = list()
     user = "admin"
     cycleDelay = 10
 
@@ -30,6 +33,7 @@ def main(argv):
 
        elif opt in ("-n", "--number"):
           switchNum = arg
+	  switchArray.append(arg)
 
        elif opt in ("-c", "--command"):
           command = arg
@@ -41,15 +45,21 @@ def main(argv):
           user = arg
 
     print('Switch Host is: ', server)
-    print('SwitchNo is: ', switchNum)
+    #print('SwitchNo is: ', switchNum)
+    for s in switchArray:
+	print('SwitchNo is: ' + s)
+
     print('Command is: ', command)
     print('Connecting to a DLI PowerSwitch at ' + server)
+    #sys.exit()
+
     switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
     if (command == "toggle"):
 	result = switch.status(switchNum)
 	if (result == 'ON'):
-	    print("Toggling Switch: " + switchNum + " from: " + result + " to: OFF")
-	    switch.off(switchNum)
+	    for s in switchArray:
+	        print("Toggling Switch: " + s + " from: " + result + " to: OFF")
+	        switch.off(s)
 
 	if (result == 'OFF'):
 	    print("Toggling Switch: " + switchNum + " from: " + result + " to: ON")
@@ -77,11 +87,15 @@ def main(argv):
 	    switch.off(switchNum)
 
     if (command == "on"):
-	switch.on(switchNum)
+	for s in switchArray:
+	    print("Turning Switch: " + s + " to: ON")
+	    switch.on(s)
+
 
     if (command == "off"):
-	switch.off(switchNum)
-
+	for s in switchArray:
+	    print("Turning Switch: " + s + " to: OFF")
+	    switch.off(s)
 
     print('The current status of the powerswitch is:')
     print(switch)
