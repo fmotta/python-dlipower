@@ -12,7 +12,6 @@ import dlipower
 import sys
 import getopt
 import time
-#from array import array
 
 shortOpts = "hs:n:c:p:u:l"
 longOpts = ["hostname=","number=","command=","password=","user=","nolink"]
@@ -22,12 +21,11 @@ def usage():
     for o in longOpts:
 	print("    --" + o)
 
-#server = 'webswitch'
 def main(argv):
     server = "192.168.0.100"
     command = "NONE"
     passWd = "1234"
-    switchNum = "0"
+#    switchNum = "0"
     switchArray = list()
     user = "admin"
     cycleDelay = 10
@@ -36,14 +34,13 @@ def main(argv):
 
     try:
 	opts, args = getopt.getopt(argv, shortOpts, longOpts)
-	#opts, args = getopt.getopt(argv,"hs:n:c:p:u:l",["hostname=","number=","command=","password=","user=","nolink"])
 
     except getopt.GetoptError:
-      print('test.py -i <inputfile> -o <outputfile>')
+      usage()
       sys.exit(2)
+
     for opt, arg in opts:
        if opt == '-h':
-          #print('test.py -i <inputfile> -o <outputfile>')
 	  usage()
           sys.exit()
 
@@ -51,7 +48,6 @@ def main(argv):
           server = arg
 
        elif opt in ("-n", "--number"):
-          switchNum = arg
 	  switchArray.append(arg)
 
        elif opt in ("-c", "--command"):
@@ -75,24 +71,24 @@ def main(argv):
     print('Connecting to a DLI PowerSwitch at ' + server)
 
     switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
-    if (command == "toggle"):
-	result = switch.status(switchNum)
-	if (result == 'ON'):
+    if (command.lower() == "toggle"):
 	    for s in switchArray:
-	        print("Toggling Switch: " + s + " from: " + result + " to: OFF")
-	        switch.off(s)
+		result = switch.status(s)
+		if (result == 'ON'):
+	            print("Toggling Switch: " + s + " from: " + result + " to: OFF")
+	            switch.off(s)
 
-	if (result == 'OFF'):
-	    for s in switchArray:
-	        print("Toggling Switch: " + switchNum + " from: " + result + " to: ON")
-	        switch.on(s)
+                elif (result == 'OFF'):
+	            for s in switchArray:
+	                print("Toggling Switch: " + s + " from: " + result + " to: ON")
+	                switch.on(s)
 
-    if (command == "status"):
+    elif (command.lower() == "status"):
 	for s in switchArray:
 	    result = switch.status(s)
 	    print("Switch: " + s + " is [" + result + "]")
 
-    if (command == "cycle"):
+    elif (command.lower() == "cycle"):
 	if (linkedToggle == False):
 	    for s in switchArray:
     	        result = switch.status(s)
@@ -141,13 +137,13 @@ def main(argv):
                 i = i + 1
 	
 
-    if (command == "on"):
+    elif (command.lower() == "on"):
 	for s in switchArray:
 	    print("Turning Switch: " + s + " to: ON")
 	    switch.on(s)
 
 
-    if (command == "off"):
+    elif (command.lower() == "off"):
 	for s in switchArray:
 	    print("Turning Switch: " + s + " to: OFF")
 	    switch.off(s)
