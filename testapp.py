@@ -15,17 +15,21 @@ import time
 
 shortOpts = "hs:n:c:p:u:l"
 longOpts = ["hostname=","number=","command=","password=","user=","nolink"]
+commands = ["toggle", "status", "cycle", "on", "off"]
 
 def usage():
-    print("commands: ")
+    print("Options:")
     for o in longOpts:
 	print("    --" + o)
+
+    print("Valid commands:")
+    for c in commands:
+	print("      " + c)
 
 def main(argv):
     server = "192.168.0.100"
     command = "NONE"
     passWd = "1234"
-#    switchNum = "0"
     switchArray = list()
     user = "admin"
     cycleDelay = 10
