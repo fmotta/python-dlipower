@@ -7,7 +7,7 @@ import time
 
 #server = 'webswitch'
 def main(argv):
-    server = "192.168.0.222"
+    server = "192.168.8.222"
     command = "NONE"
     passWd = "1234"
     switchNum = "0"
