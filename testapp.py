@@ -13,8 +13,8 @@ import sys
 import getopt
 import time
 
-shortOpts = "hs:n:c:p:u:l"
-longOpts = ["hostname=","number=","command=","password=","user=","nolink"]
+shortOpts = "d:hs:n:c:p:u:l"
+longOpts = ["delay=","hostname=","number=","command=","password=","user=","nolink"]
 commands = ["toggle", "status", "cycle", "on", "off"]
 
 def usage():
@@ -71,6 +71,9 @@ def main(argv):
        elif opt in ("-u", "--user"):
           user = arg
 
+       elif opt in ("-d", "--delay"):
+          cycleDelay = arg
+
        elif opt in ("-l", "--nolink"):
           linkedToggle = False
 
@@ -84,6 +87,7 @@ def main(argv):
 	print('SwitchNo is: ' + s)
 
     print('Command is: ', command)
+    print('Cycle Delay is: ', cycleDelay)
     print('Connecting to a DLI PowerSwitch at ' + server)
 
     switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
@@ -113,7 +117,7 @@ def main(argv):
 	            print(" turning it off...")
 	            switch.off(s)
 		    print("Waiting: " + str(cycleDelay) + " seconds")
-	            time.sleep(cycleDelay)
+	            time.sleep(float(cycleDelay))
 	            print(" turning it on...")
 	            switch.on(s)
 
@@ -121,7 +125,7 @@ def main(argv):
 	            print(" turning it on...")
 	            switch.on(s)
 		    print("Waiting: " + str(cycleDelay) + " seconds")
-	            time.sleep(cycleDelay)
+	            time.sleep(float(cycleDelay))
 	            print(" turning it off...")
 	            switch.off(s)
 	else:
@@ -141,7 +145,7 @@ def main(argv):
                 i = i + 1
 
 	    print("Waiting: " + str(cycleDelay) + " seconds")
-            time.sleep(cycleDelay)	# wait
+            time.sleep(float(cycleDelay))	# wait
 	    i = 0
 	    for s in switchArray:	# now toggle back
 	        if (resultArray[i] == 'ON'):
