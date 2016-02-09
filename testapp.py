@@ -26,6 +26,14 @@ def usage():
     for c in commands:
 	print("      " + c)
 
+def validCommand(cmd):
+    if cmd in commands:
+	return True
+
+    print("Invalid command: " + cmd)
+    return False
+
+
 def main(argv):
     server = "192.168.0.100"
     command = "NONE"
@@ -65,6 +73,10 @@ def main(argv):
 
        elif opt in ("-l", "--nolink"):
           linkedToggle = False
+
+    if (validCommand(command) == False):
+	usage()
+	sys.exit(1)
 
     print('Switch Host is: ', server)
 
@@ -151,6 +163,9 @@ def main(argv):
 	for s in switchArray:
 	    print("Turning Switch: " + s + " to: OFF")
 	    switch.off(s)
+    else:
+	usage()
+	sys.exit(1)
 
     print('The current status of the powerswitch is:')
     print(switch)
