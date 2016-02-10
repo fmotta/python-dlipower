@@ -90,7 +90,20 @@ def main(argv):
     print('Cycle Delay is: ', cycleDelay)
     print('Connecting to a DLI PowerSwitch at ' + server)
 
-    switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
+    try:
+	switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
+
+    # Yep - cannot find an exception routine that helps find a failed connection...
+    # So... here are some attempts that cannot seem to prevent a Traceback from a failed connect
+    # Probably my error/problem
+    except dlipower.ValueError:
+        print("Exception connecting to switch")
+	sys.exit(0xff)
+
+    if (switch.verify() == False):
+        print("Exception connecting to switch")
+	sys.exit(0xff)
+
     if (command.lower() == "toggle"):
 	    for s in switchArray:
 		result = switch.status(s)
