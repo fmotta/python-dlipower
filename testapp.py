@@ -13,9 +13,9 @@ import sys
 import getopt
 import time
 
-shortOpts = "d:hs:n:c:p:u:l"
-longOpts = ["delay=","hostname=","number=","command=","password=","user=","nolink"]
-commands = ["toggle", "status", "cycle", "on", "off"]
+shortOpts = "d:hs:n:c:p:u:lbo"
+longOpts = ["delay=","hostname=","number=","command=","password=","user=","backup","nolink", "config"]
+commands = ["toggle", "status", "cycle", "on", "off", "save"]
 
 def usage():
     print("Options:")
@@ -43,6 +43,8 @@ def main(argv):
     cycleDelay = 10
     linkedToggle = True
     resultArray = list()
+    backupConfig = False
+    loadConfig = False
 
     try:
 	opts, args = getopt.getopt(argv, shortOpts, longOpts)
@@ -55,6 +57,15 @@ def main(argv):
        if opt == '-h':
 	  usage()
           sys.exit()
+
+       # NOTE: Config is stored in clear text
+       elif opt in ("-b", "--backup"):
+	  print("\n\nWARNING: Configuration is saved in clear text and includes the password!\n\n")
+          backupConfig = True
+
+       # FIXME - TODO load configuration
+       elif opt in ("-o", "--config"):
+          LoadConfig = True
 
        elif opt in ("-s", "--server"):
           server = arg
@@ -186,6 +197,9 @@ def main(argv):
 
     print('The current status of the powerswitch is:')
     print(switch)
+
+    if (backupConfig == True):
+	switch.save_configuration()
 
 
 if __name__ == "__main__":
