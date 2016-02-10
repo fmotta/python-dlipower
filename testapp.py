@@ -139,7 +139,7 @@ def main(argv):
 	                switch.on(s)
 
     elif (command.lower() == "rename"):
-	# Simple sequentially rename - meh easy to understand
+	# Simple sequentially rename - meh easy to understand - first switch number passed as an argument gets the first name passed.  Then the second and ...
 	i = 0
 	for s in switchNameArray:
 	    sName = switchArray[i]
@@ -155,7 +155,7 @@ def main(argv):
 	    print("Switch: " + s + " is [" + result + "]")
 
     elif (command.lower() == "cycle"):
-	if (linkedToggle == False):
+	if (linkedToggle == False):   # Toggle ALL the requested switches (inverse of present state), pause, then toggle them back to last state
 	    for s in switchArray:
     	        result = switch.status(s)
 	        print("Switch: " + s + " is [" + result + "]")
@@ -174,7 +174,7 @@ def main(argv):
 	            time.sleep(float(cycleDelay))
 	            print(" turning it off...")
 	            switch.off(s)
-	else:
+	else:	# This is the default path - toggle the requested switches(inverse of present state), wait a bit, toggle them back to last state
 	    i = 0
 	    for s in switchArray:	# get the state of all the requested switches
     	        resultArray.append(switch.status(s))
