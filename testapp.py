@@ -13,9 +13,9 @@ import sys
 import getopt
 import time
 
-shortOpts = "d:hs:n:c:p:u:lbo"
-longOpts = ["delay=","hostname=","number=","command=","password=","user=","backup","nolink", "config"]
-commands = ["toggle", "status", "cycle", "on", "off", "save"]
+shortOpts = "d:hs:n:c:p:u:lbom:"
+longOpts = ["delay=","hostname=","number=","command=","password=","user=","backup","nolink", "config", "name="]
+commands = ["rename", "toggle", "status", "cycle", "on", "off", "save"]
 
 def usage():
     print("Options:")
@@ -45,6 +45,8 @@ def main(argv):
     resultArray = list()
     backupConfig = False
     loadConfig = False
+    switchNameArray = list()
+    VerboseOutput = True
 
     try:
 	opts, args = getopt.getopt(argv, shortOpts, longOpts)
@@ -53,6 +55,7 @@ def main(argv):
       usage()
       sys.exit(2)
 
+    # Process args
     for opt, arg in opts:
        if opt == '-h':
 	  usage()
@@ -73,6 +76,9 @@ def main(argv):
        elif opt in ("-n", "--number"):
 	  switchArray.append(arg)
 
+       elif opt in ("-m", "--name"):
+          switchNameArray.append(arg)
+
        elif opt in ("-c", "--command"):
           command = arg
 
@@ -92,15 +98,18 @@ def main(argv):
 	usage()
 	sys.exit(1)
 
-    print('Switch Host is: ', server)
+    # Report settings (rather verbose for now)
+    if (VerboseOutput == True):
+        print('Switch Host is: ', server)
 
-    for s in switchArray:
-	print('SwitchNo is: ' + s)
+        for s in switchArray:
+    	   print('SwitchNo is: ' + s)
 
-    print('Command is: ', command)
-    print('Cycle Delay is: ', cycleDelay)
-    print('Connecting to a DLI PowerSwitch at ' + server)
+        print('Command is: ', command)
+        print('Cycle Delay is: ', cycleDelay)
+        print('Connecting to a DLI PowerSwitch at ' + server)
 
+    # Connect to switch and try to handle an exception
     try:
 	switch = dlipower.PowerSwitch(hostname=server, userid=user, password=passWd)
 
@@ -115,6 +124,8 @@ def main(argv):
         print("Exception connecting to switch")
 	sys.exit(0xff)
 
+
+    # Process commands
     if (command.lower() == "toggle"):
 	    for s in switchArray:
 		result = switch.status(s)
@@ -126,6 +137,17 @@ def main(argv):
 	            for s in switchArray:
 	                print("Toggling Switch: " + s + " from: " + result + " to: ON")
 	                switch.on(s)
+
+    elif (command.lower() == "rename"):
+	# Simple sequentially rename - meh easy to understand
+	i = 0
+	for s in switchNameArray:
+	    sName = switchArray[i]
+            tName = switchNameArray[i]
+	    print("SNA: " + tName)
+	    print("Naming Switch: " + sName + " to: " + s)
+            switch[int(sName)-1].name = tName
+	    i = i + 1
 
     elif (command.lower() == "status"):
 	for s in switchArray:
@@ -180,12 +202,10 @@ def main(argv):
 	            switch.off(s)
                 i = i + 1
 	
-
     elif (command.lower() == "on"):
 	for s in switchArray:
 	    print("Turning Switch: " + s + " to: ON")
 	    switch.on(s)
-
 
     elif (command.lower() == "off"):
 	for s in switchArray:
